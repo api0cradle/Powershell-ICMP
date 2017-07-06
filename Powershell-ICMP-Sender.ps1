@@ -23,11 +23,12 @@
     
     # Must be divided into 1472 chunks
     [int]$bufSize = 1472
-    $inFile = "C:\temp\test2.txt"
+    $inFile = "C:\temp\test3.txt"
     
 
     $stream = [System.IO.File]::OpenRead($inFile)
-    $chunkNum = 1
+    $chunkNum = 0
+    $TotalChunks = [math]::floor($stream.Length / 1472)
     $barr = New-Object byte[] $bufSize
     
     # Start of Transfer
@@ -42,10 +43,11 @@
         #Missing check if transfer is okay, added sleep.
         sleep 1
         #$ICMPClient.SendAsync($IPAddress,60 * 1000, $barr, $PingOptions) | Out-Null
-        Write-Output "Done with $chunkNum"
+        Write-Output "Done with $chunkNum out of $TotalChunks"
         $chunkNum += 1
     }
 
     # End the transfer
     $sendbytes = ([text.encoding]::ASCII).GetBytes("EOF")
     $ICMPClient.Send($IPAddress,10, $sendbytes, $PingOptions) | Out-Null
+    Write-Output "File Transfered"

