@@ -1,6 +1,6 @@
 # Powershell-ICMP
 
-# These scrips are early alpha.
+These scrips are early alpha.
 
 # Powershell-ICMP-Listener.ps1
 This script is used to setup a listener on a server. 
@@ -8,3 +8,4 @@ This script is used to setup a listener on a server.
 # Powershell-ICMP-Sender.ps1
 This script is used to send files using the data field in ICMP packets.
 This script can also be used against Metasploit's ICMP exfil module.
+https://www.rapid7.com/db/modules/auxiliary/server/icmp_exfil
